@@ -1,18 +1,12 @@
 <?php
-// includes/conexao.php
-$host = '127.0.0.1';
-$db   = 'sistema_app';
-$user = 'root';
-$pass = ''; // ajuste conforme seu ambiente
-$dsn  = "mysql:host=$host;dbname=$db;charset=utf8mb4";
+$host = "localhost";
+$user = "root"; // seu usuário do MySQL
+$pass = "";     // sua senha do MySQL (se tiver)
+$db   = "bd_crud_php";
 
-$options = [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-];
+$conn = new mysqli($host, $user, $pass, $db);
 
-try {
-    $pdo = new PDO($dsn, $user, $pass, $options);
-} catch (Exception $e) {
-    die('Erro na conexão: ' . $e->getMessage());
+if ($conn->connect_error) {
+    die("Erro de conexão: " . $conn->connect_error);
 }
+?>

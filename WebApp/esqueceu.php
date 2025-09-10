@@ -13,7 +13,7 @@ $email = $_SESSION['reset_email'];
 <head>
   <meta charset="utf-8">
   <title>Redefinir Senha</title>
-  <link rel="stylesheet" href="/CSS/style.css">
+  <link rel="stylesheet" href="/CSS/estilo.css">
 </head>
 <body>
   <div class="container">
