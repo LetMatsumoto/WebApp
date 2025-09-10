@@ -1,38 +1,34 @@
-<?php include("conexao.php"); ?>
-<!DOCTYPE html>
-<html lang="pt-BR">
+<?php
+// esqueci_senha/reset_senha.php
+require_once __DIR__ . '/../includes/funcoes.php';
+session_start();
+if (empty($_SESSION['reset_email'])) {
+    header('Location: index.php?erro=' . urlencode('Inicie o procedimento novamente'));
+    exit;
+}
+$email = $_SESSION['reset_email'];
+?>
+<!doctype html>
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Esqueceu a Senha</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="utf-8">
+  <title>Redefinir Senha</title>
+  <link rel="stylesheet" href="/CSS/style.css">
 </head>
 <body>
-<h2>Esqueceu a Senha</h2>
-<form method="post">
-    Login (email): <input type="text" name="login" required><br>
-    Nova senha: <input type="password" name="nova" required><br>
-    Confirmar: <input type="password" name="confirma" required><br>
-    <button type="submit" name="resetar">Redefinir</button>
-</form>
-
-<?php
-if (isset($_POST['resetar'])) {
-    $login = $_POST['login'];
-    $nova = $_POST['nova'];
-    $confirma = $_POST['confirma'];
-
-    if ($nova === $confirma) {
-        $hash = password_hash($nova, PASSWORD_DEFAULT);
-        $sql = "UPDATE usuarios SET senha='$hash' WHERE login='$login'";
-        if ($conn->query($sql)) {
-            echo "Senha redefinida! Vá para <a href='index.php'>Login</a>";
-        } else {
-            echo "Erro: " . $conn->error;
-        }
-    } else {
-        echo "As senhas não conferem!";
-    }
-}
-?>
+  <div class="container">
+    <h2>Nova senha para <?=htmlspecialchars($email)?></h2>
+    <?php if(!empty($_GET['erro'])): ?>
+      <div class="alert"><?=htmlspecialchars($_GET['erro'])?></div>
+    <?php endif; ?>
+    <form action="processa_reset.php" method="post">
+      <input type="hidden" name="email" value="<?=htmlspecialchars($email)?>">
+      <label>Nova senha</label>
+      <input type="password" name="senha1" required>
+      <label>Confirmar nova senha</label>
+      <input type="password" name="senha2" required>
+      <button type="submit">Atualizar senha</button>
+    </form>
+  </div>
 </body>
 </html>

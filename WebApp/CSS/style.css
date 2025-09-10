@@ -1,32 +1,54 @@
 body {
-    font-family: Arial, sans-serif;
-    background: #f2f2f2;
-    text-align: center;
-    padding: 50px;
+  font-family: Arial, sans-serif;
+  background: #EADCF8; /* lilás clarinho */
+  text-align: center;
+  padding: 50px;
+  color: #333;
 }
 
+/* cartões/formulários */
 form {
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    display: inline-block;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  background: #ffffff;        /* caixas brancas */
+  padding: 20px;
+  border-radius: 10px;
+  display: inline-block;
+  box-shadow: 0 0 10px rgba(0,0,0,0.08);
+  margin-bottom: 16px;
 }
 
+/* campos */
 input, select, button {
-    margin: 8px;
-    padding: 8px;
-    width: 90%;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+  margin: 8px;
+  padding: 10px;
+  width: 90%;
+  border: 1px solid #bca7d9;  /* contorno roxo suave */
+  border-radius: 8px;
+  background: #ffffff;        /* brancos */
+  color: #333;
 }
 
+/* botões */
 button {
-    background: #4CAF50;
-    color: #fff;
-    cursor: pointer;
+  background: #a678d1;        /* branco */
+  border: 2px solid #a678d1;  /* lilás */
+  color: #5a2d82;             /* roxo no texto */
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.25s;
+}
+button:hover {
+  background: #f5ebff;        /* hover clarinho */
+  border-color: #5a2d82;
 }
 
-button:hover {
-    background: #45a049;
+/* links combinando com o tema */
+a {
+  color: #6a35a8;             /* roxo */
+  text-decoration: none;
+  font-weight: 600;
+}
+a:hover {
+  text-decoration: underline;
+  background: #f5ebff;        /* leve realce no hover */
+  border-radius: 4px;
 }
