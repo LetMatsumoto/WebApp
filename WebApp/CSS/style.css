@@ -4,48 +4,69 @@ body
    color:#333;
     margin:0; 
     padding:0; }
-.container 
-{ width:360px;
+
+.container { 
+  width:500px;
    margin:60px auto; 
    background:#fff; 
    padding:20px; 
    border-radius:6px; 
    box-shadow:0 2px 8px rgba(0,0,0,.08);
-   }
-h2 
-{ margin-top:0;
-   text-align:center;
-   }
+}
+
+.cadastro-container{
+  width: 600px;
+  background-color: white;
+  margin:60px auto; 
+  border-radius: 10px;
+}
+
+p {
+  text-align: center;
+}
+
+h2 { 
+  text-align:center;
+  padding: 10px;  
+}
+
 input[type="text"],
- input[type="email"],
-  input[type="password"],
-   select {
-  width:100%; 
+input[type="email"],
+input[type="password"],
+select {
+  width:400px; 
   padding:10px;
-  margin:8px 0 12px;
+  margin: 10px 15%;
   border:1px solid #ddd; 
   border-radius:4px;
 }
-button 
-{ width:100%; 
+
+button { 
+  width:200px; 
   padding:10px; 
   border:0; 
   background:#2b8cff; 
   color:#fff; border-radius:4px; 
   cursor:pointer; 
+  margin: 0px 33%;
 }
-.alert 
-{ background:#ffe6e6; 
+
+.alert { 
+  background:#ffe6e6; 
   color:#a00; 
   padding:8px; 
   border-radius:4px; 
   margin-bottom:10px; 
 }
-.success 
-{ background:#e6ffe6; 
+.success { background:#e6ffe6; 
   color:#070; padding:8px; 
   border-radius:4px; 
   margin-bottom:10px; 
 }
-a { color:#2b8cff; text-decoration:none; }
+
+a { 
+  color:#264468; 
+  text-decoration:none; 
+  text-align: center;
+}
 

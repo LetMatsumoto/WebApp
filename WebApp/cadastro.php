@@ -1,63 +1,92 @@
 <?php
 require_once 'conexao.php';
-require_once 'funcoes.php';
+session_start();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nome  = trim($_POST['nome'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-    $senha = $_POST['senha'] ?? '';
-    $tipo  = $_POST['tipo'] ?? '1';
+$success = "";
+$error = "";
 
-    if (empty($nome) || empty($email) || empty($senha)) {
-        $erro = "Preencha todos os campos.";
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $nome = trim($_POST['nome']);
+    $login = trim($_POST['email']);
+    $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
+    $tipo = $_POST['tipo']; // 'A' = Admin, 'U' = Normal
+    $quant_acesso = 0;
+    $status = 'A';
+
+    // Verifica se login/email já existe
+    $sqlCheck = "SELECT * FROM USUARIOS WHERE login=?";
+    $stmtCheck = $conn->prepare($sqlCheck);
+    $stmtCheck->bind_param("s", $login);
+    $stmtCheck->execute();
+    $resultCheck = $stmtCheck->get_result();
+
+    if ($resultCheck->num_rows > 0) {
+        $error = "Este e-mail já está cadastrado!";
     } else {
-        // Verifica se o e-mail já existe
-        $stmt = $conn->prepare("SELECT email FROM usuarios WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($result->num_rows > 0) {
-            $erro = "Email já cadastrado.";
+        // Insere usuário
+        $sqlInsert = "INSERT INTO USUARIOS (login, senha, nome, tipo, quant_acesso, status)
+                      VALUES (?, ?, ?, ?, ?, ?)";
+        $stmtInsert = $conn->prepare($sqlInsert);
+        $stmtInsert->bind_param("ssssis", $login, $senha, $nome, $tipo, $quant_acesso, $status);
+
+        if ($stmtInsert->execute()) {
+            $success = "Usuário cadastrado com sucesso!";
         } else {
-            $hash = password_hash($senha, PASSWORD_DEFAULT);
-            
-            $stmt = $conn->prepare("INSERT INTO usuarios (email, senha, nome, tipo, quant_acesso, status, tentativas) VALUES (?, ?, ?, ?, 0, 'A', 0)");
-            $stmt->bind_param("sssi", $email, $hash, $nome, $tipo);
-            
-            if ($stmt->execute()) {
-                redirect('login.php?success=Cadastro realizado com sucesso!');
-            } else {
-                $erro = "Erro ao cadastrar. Tente novamente.";
-            }
+            $error = "Erro ao cadastrar: " . $stmtInsert->error;
         }
-        $stmt->close();
     }
 }
+
+
 ?>
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro</title>
     <link rel="stylesheet" href="CSS/style.css">
 </head>
 <body>
-<div class="container">
-    <h2>Cadastro</h2>
-    <?php if (!empty($erro)): ?>
-        <div class="alert"><?= htmlspecialchars($erro) ?></div>
+<div class="cadastro-container">
+    <h2>Cadastro de Usuário</h2>
+
+    <?php if ($success != ""): ?>
+        <p class="success"><?php echo $success; ?></p>
     <?php endif; ?>
-    <form method="post">
-        <input type="text" name="nome" placeholder="Nome" required>
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="password" name="senha" placeholder="Senha" required>
-        <select name="tipo">
-            <option value="1">Usuário comum</option>
-            <option value="0">Administrador</option>
-        </select>
+    <?php if ($error != ""): ?>
+        <p class="error"><?php echo $error; ?></p>
+    <?php endif; ?>
+
+    <form id="cadastroForm" method="post">
+        <div class="input-group">
+            <input type="text" id="nome" name="nome" placeholder="Digite seu nome" required>
+        </div>
+
+        <div class="input-group">
+            <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>
+        </div>
+
+        <div class="input-group">
+            <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+        </div>
+
+        <div class="input-group">
+            <select id="tipo" name="tipo" required>
+                <option value="U">Normal</option>
+                <option value="A">Administrador</option>
+            </select>
+        </div>
+
         <button type="submit">Cadastrar</button>
     </form>
-    <small><a href="login.php">Já tem conta? Login</a></small>
+
+    <p>Já tem conta?</p>
+    <a href="login.php">
+        <button type="button">Voltar para Login</button>
+    </a>
 </div>
+
 </body>
 </html>
+ 
