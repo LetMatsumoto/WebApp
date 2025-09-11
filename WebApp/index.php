@@ -51,8 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <input type="email" name="email" placeholder="Email" required>
     <input type="password" name="senha" placeholder="Senha" required>
     <button type="submit">Entrar</button>
+    <small><a href="cadastro.php">Cadastrar</a> • <a href="esqueci_senha.php">Esqueci a senha</a></small>
   </form>
-  <small><a href="cadastro.php">Cadastrar</a> • <a href="esqueci_senha.php">Esqueci a senha</a></small>
+  
 </div>
 </body>
 </html>

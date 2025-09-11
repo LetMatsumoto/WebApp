@@ -3,19 +3,27 @@ require_once 'conexao.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nome = trim($_POST['nome'] ?? '');
-    $email = trim($_POST['email'] ?? '');
+    $login = trim($_POST['login'] ?? ''); // Alterado de 'email' para 'login'
     $senha = $_POST['senha'] ?? '';
     $tipo = $_POST['tipo'] ?? '1';
 
-    if ($nome && $email && $senha) {
-        $stmt = $pdo->prepare("SELECT email FROM usuarios WHERE email = ?");
-        $stmt->execute([$email]);
+    if ($nome && $login && $senha) {
+        // Verifica se o login (e-mail) já existe
+        $stmt = $pdo->prepare("SELECT login FROM usuarios WHERE login = ?");
+        $stmt->execute([$login]);
         if ($stmt->fetch()) {
-            $erro = "Email já cadastrado.";
+            $erro = "Login já cadastrado.";
         } else {
+            // Criptografa a senha antes de inserir
             $hash = password_hash($senha, PASSWORD_DEFAULT);
-            $stmt = $pdo->prepare("INSERT INTO usuarios (email, senha, nome, tipo, quant_acesso, status, tentativas) VALUES (?, ?, ?, ?, 0, 'A', 0)");
-            $stmt->execute([$email, $hash, $nome, $tipo]);
+            
+            // Query de INSERT corrigida para a estrutura da tabela
+            $stmt = $pdo->prepare("INSERT INTO usuarios (login, senha, nome, tipo, quant_acesso, status, tentativas) VALUES (?, ?, ?, ?, 0, 'A', 0)");
+            
+            // Executa a inserção com os valores corretos
+            $stmt->execute([$login, $hash, $nome, $tipo]);
+            
+            // Redireciona em caso de sucesso
             header('Location: login.php?success=Cadastro realizado');
             exit;
         }
@@ -37,8 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <?php if(!empty($erro)): ?><div class="alert"><?=$erro?></div><?php endif; ?>
   <form method="post">
     <input type="text" name="nome" placeholder="Nome" required>
-    <input type="email" name="email" placeholder="Email" required>
-    <input type="password" name="senha" placeholder="Senha" required>
+    <input type="email" name="login" placeholder="Email" required> <input type="password" name="senha" placeholder="Senha" required>
     <select name="tipo">
       <option value="1">Usuário comum</option>
       <option value="0">Administrador</option>
