@@ -7,7 +7,7 @@ if (empty($_SESSION['resert_email'])) {
 }
 
 $email = $_SESSION['resert_email'];
-
+ 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $s1 = $_POST['senha1'] ?? '';
     $s2 = $_POST['senha2'] ?? '';

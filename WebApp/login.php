@@ -20,8 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($user && $user['status'] === 'A' && password_verify($senha, $user['senha'])) {
             // Acesso bem-sucedido
             // Atualiza tentativas para 0 e incrementa a quantidade de acessos
-            $stmt = $conn->prepare("UPDATE usuarios SET tentativas = 0, quant_acesso = quant_acesso + 1 WHERE login = ?");
-            $stmt->bind_param("s", $email);
+            $stmt = $conn->prepare("UPDATE usuarios SET quant_acesso = quant_acesso + 1 WHERE login = ?");
+            $stmt->bind_param("s", $login);
             $stmt->execute();
             $stmt->close();
             
@@ -39,13 +39,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             // Acesso falhou
             if ($user) {
-                $tentativas = $user['tentativas'] + 1;
+                $tentativas = 1;
+                $tentativas = $tentativas + 1;
                 $status = $user['status'];
                 if ($tentativas >= 3) {
                     $status = 'B';
                 }
-                $stmt = $conn->prepare("UPDATE usuarios SET tentativas = ?, status = ? WHERE login = ?");
-                $stmt->bind_param("iss", $tentativas, $status, $email);
+                    
+                $stmt = $conn->prepare("UPDATE usuarios SET status = ? WHERE login = ?");
+                $stmt->bind_param("ss", $status, $email);
                 $stmt->execute();
                 $stmt->close();
                 
