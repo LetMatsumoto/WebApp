@@ -1,6 +1,6 @@
 body 
 { font-family: Arial, sans-serif;
-   background:#f5f5f5; 
+   background:rgb(255, 222, 253); 
    color:#333;
     margin:0; 
     padding:0; }
@@ -8,7 +8,7 @@ body
 .container { 
   width:500px;
    margin:60px auto; 
-   background:#fff; 
+   background:rgb(239, 184, 255); 
    padding:20px; 
    border-radius:6px; 
    box-shadow:0 2px 8px rgba(0,0,0,.08);
@@ -16,7 +16,7 @@ body
 
 .cadastro-container{
   width: 600px;
-  background-color: white;
+  background-color: rgb(239, 184, 255);
   margin:60px auto; 
   border-radius: 10px;
 }
@@ -45,7 +45,7 @@ button {
   width:200px; 
   padding:10px; 
   border:0; 
-  background:#2b8cff; 
+  background:#b949ff; 
   color:#fff; border-radius:4px; 
   cursor:pointer; 
   margin: 0px 33%;
