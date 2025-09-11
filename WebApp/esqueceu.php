@@ -3,15 +3,15 @@ require_once 'conexao.php';
 require_once 'funcoes.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = trim($_POST['email'] ?? '');
+    $login = trim($_POST['email'] ?? '');
     
-    $stmt = $conn->prepare("SELECT email FROM usuarios WHERE email = ?");
-    $stmt->bind_param("s", $email);
+    $stmt = $conn->prepare("SELECT email FROM usuarios WHERE login = ?");
+    $stmt->bind_param("s", $login);
     $stmt->execute();
     $result = $stmt->get_result();
     
     if ($result->num_rows > 0) {
-        $_SESSION['reset_email'] = $email;
+        $_SESSION['reset_email'] = $login;
         redirect('reset_senha.php');
     } else {
         $erro = "Email não encontrado.";

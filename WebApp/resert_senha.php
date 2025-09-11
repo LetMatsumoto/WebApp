@@ -2,11 +2,11 @@
 require_once 'conexao.php';
 require_once 'funcoes.php';
 
-if (empty($_SESSION['reset_email'])) {
+if (empty($_SESSION['resert_email'])) {
     redirect('esqueceu_senha.php');
 }
 
-$email = $_SESSION['reset_email'];
+$email = $_SESSION['resert_email'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $s1 = $_POST['senha1'] ?? '';
@@ -18,12 +18,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $erro = "As senhas não conferem.";
     } else {
         $hash = password_hash($s1, PASSWORD_DEFAULT);
-        $stmt = $conn->prepare("UPDATE usuarios SET senha = ?, tentativas = 0, status = 'A' WHERE email = ?");
-        $stmt->bind_param("ss", $hash, $email);
+        $stmt = $conn->prepare("UPDATE usuarios SET senha = ?, tentativas = 0, status = 'A' WHERE login = ?");
+        $stmt->bind_param("ss", $hash, $login);
         $stmt->execute();
         $stmt->close();
         
-        unset($_SESSION['reset_email']);
+        unset($_SESSION['resert_email']);
         redirect('login.php?success=Senha redefinida com sucesso!');
     }
 }

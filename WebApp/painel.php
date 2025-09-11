@@ -16,7 +16,6 @@ if (!is_logged()) {
 <div class="container">
     <h2>Login feito com sucesso</h2>
     <p>Bem-vindo, <?= htmlspecialchars($_SESSION['nome']) ?>!</p>
-    <small><a href="logout.php">Sair</a></small>
 </div>
 </body>
 </html>

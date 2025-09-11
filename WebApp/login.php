@@ -3,15 +3,15 @@ require_once 'conexao.php';
 require_once 'funcoes.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = trim($_POST['email'] ?? '');
+    $login = trim($_POST['email'] ?? '');
     $senha = $_POST['senha'] ?? '';
 
-    if (empty($email) || empty($senha)) {
+    if (empty($login) || empty($senha)) {
         $erro = "Por favor, preencha todos os campos.";
     } else {
         // Usa prepared statement para prevenir injeção de SQL
-        $stmt = $conn->prepare("SELECT * FROM usuarios WHERE email = ?");
-        $stmt->bind_param("s", $email);
+        $stmt = $conn->prepare("SELECT * FROM usuarios WHERE login = ?");
+        $stmt->bind_param("s", $login);
         $stmt->execute();
         $result = $stmt->get_result();
         $user = $result->fetch_assoc();
@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($user && $user['status'] === 'A' && password_verify($senha, $user['senha'])) {
             // Acesso bem-sucedido
             // Atualiza tentativas para 0 e incrementa a quantidade de acessos
-            $stmt = $conn->prepare("UPDATE usuarios SET tentativas = 0, quant_acesso = quant_acesso + 1 WHERE email = ?");
+            $stmt = $conn->prepare("UPDATE usuarios SET tentativas = 0, quant_acesso = quant_acesso + 1 WHERE login = ?");
             $stmt->bind_param("s", $email);
             $stmt->execute();
             $stmt->close();
@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($tentativas >= 3) {
                     $status = 'B';
                 }
-                $stmt = $conn->prepare("UPDATE usuarios SET tentativas = ?, status = ? WHERE email = ?");
+                $stmt = $conn->prepare("UPDATE usuarios SET tentativas = ?, status = ? WHERE login = ?");
                 $stmt->bind_param("iss", $tentativas, $status, $email);
                 $stmt->execute();
                 $stmt->close();
@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="password" name="senha" placeholder="Senha" required>
         <button type="submit">Entrar</button>
         <small>
-            <a href="cadastro.php">Cadastrar</a> •
+            <a href="cadastro.php">Cadastrar</a> |
             <a href="esqueceu_senha.php">Esqueci a senha</a>
         </small>
     </form>
