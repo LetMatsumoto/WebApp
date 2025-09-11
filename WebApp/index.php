@@ -1,53 +1,58 @@
-<?php include_once("conexao.php"); ?>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>Login</title>
-<link rel="stylesheet" href="CSS/style.css">
-</head>
-<body>
-<h2>Login</h2>
-<form method="post">
-    Login: <input type="text" name="login" required><br>
-    Senha: <input type="password" name="senha" required><br>
-    <button type="submit" name="entrar">Entrar</button>
-    <a href="cadastro.php">Cadastrar</a> |
-     <a href="esqueceu.php">Esqueceu a senha?</a>
-</form>
-
-
 <?php
-if (isset($_POST['entrar'])) {
-    $login = $_POST['login'];
-    $senha = $_POST['senha'];
+require_once 'conexao.php';
+require_once 'funcoes.php';
 
-    $sql = "SELECT * FROM usuarios WHERE login='$login' AND status='A'";
-    $res = $conn->query($sql);
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = trim($_POST['email'] ?? '');
+    $senha = $_POST['senha'] ?? '';
 
-    if ($res->num_rows > 0) {
-        $user = $res->fetch_assoc();
+    $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE email = ?");
+    $stmt->execute([$email]);
+    $user = $stmt->fetch();
 
-        if (password_verify($senha, $user['senha'])) {
-            $_SESSION['login'] = $user['login'];
-            
-            // Contar acessos
-            $acessos = $user['quant_acesso'] + 1;
-            $conn->query("UPDATE usuarios SET quant_acesso=$acessos WHERE login='$login'");
+    if ($user && $user['status'] === 'A' && password_verify($senha, $user['senha'])) {
+        // reset tentativas, contar acesso
+        $pdo->prepare("UPDATE usuarios SET tentativas=0, quant_acesso=quant_acesso+1 WHERE email=?")->execute([$email]);
 
-            // Se a senha for a padrão, redirecionar para a pagina trocar de senha
-            if (password_verify("123456", $user['senha'])) {
-                header("Location: trocar.php");
-            } else {
-                header("Location: home.php");
-            }
+        $_SESSION['email'] = $user['email'];
+        $_SESSION['nome']  = $user['nome'];
+        $_SESSION['tipo']  = $user['tipo'];
+
+        if ($user['quant_acesso'] == 0) {
+            redirect('primeiro_acesso.php');
         } else {
-            echo "Senha incorreta!";
+            redirect('painel.php');
         }
     } else {
-        echo "Usuário não encontrado ou inativo!";
+        if ($user) {
+            $tentativas = $user['tentativas'] + 1;
+            $status = $user['status'];
+            if ($tentativas >= 3) $status = 'B';
+            $pdo->prepare("UPDATE usuarios SET tentativas=?, status=? WHERE email=?")
+                ->execute([$tentativas, $status, $email]);
+        }
+        $erro = "Usuário ou senha inválidos.";
     }
 }
 ?>
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Login</title>
+  <link rel="stylesheet" href="CSS/style.css">
+</head>
+<body>
+<div class="container">
+  <h2>Login</h2>
+  <?php if(!empty($_GET['success'])): ?><div class="success"><?=htmlspecialchars($_GET['success'])?></div><?php endif; ?>
+  <?php if(!empty($erro)): ?><div class="alert"><?=$erro?></div><?php endif; ?>
+  <form method="post">
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="password" name="senha" placeholder="Senha" required>
+    <button type="submit">Entrar</button>
+  </form>
+  <small><a href="cadastro.php">Cadastrar</a> • <a href="esqueci_senha.php">Esqueci a senha</a></small>
+</div>
 </body>
 </html>

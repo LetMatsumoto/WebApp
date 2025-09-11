@@ -1,34 +1,36 @@
 <?php
-// esqueci_senha/reset_senha.php
-require_once __DIR__ . '/../includes/funcoes.php';
+require_once 'conexao.php';
 session_start();
-if (empty($_SESSION['reset_email'])) {
-    header('Location: index.php?erro=' . urlencode('Inicie o procedimento novamente'));
-    exit;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = trim($_POST['email'] ?? '');
+    $stmt = $pdo->prepare("SELECT email FROM usuarios WHERE email = ?");
+    $stmt->execute([$email]);
+    if ($stmt->fetch()) {
+        $_SESSION['reset_email'] = $email;
+        header('Location: reset_senha.php');
+        exit;
+    } else {
+        $erro = "Email não encontrado.";
+    }
 }
-$email = $_SESSION['reset_email'];
 ?>
 <!doctype html>
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Redefinir Senha</title>
-  <link rel="stylesheet" href="/CSS/estilo.css">
+  <title>Esqueci a senha</title>
+  <link rel="stylesheet" href="CSS/style.css">
 </head>
 <body>
-  <div class="container">
-    <h2>Nova senha para <?=htmlspecialchars($email)?></h2>
-    <?php if(!empty($_GET['erro'])): ?>
-      <div class="alert"><?=htmlspecialchars($_GET['erro'])?></div>
-    <?php endif; ?>
-    <form action="processa_reset.php" method="post">
-      <input type="hidden" name="email" value="<?=htmlspecialchars($email)?>">
-      <label>Nova senha</label>
-      <input type="password" name="senha1" required>
-      <label>Confirmar nova senha</label>
-      <input type="password" name="senha2" required>
-      <button type="submit">Atualizar senha</button>
-    </form>
-  </div>
+<div class="container">
+  <h2>Esqueci a senha</h2>
+  <?php if(!empty($erro)): ?><div class="alert"><?=$erro?></div><?php endif; ?>
+  <form method="post">
+    <input type="email" name="email" placeholder="Digite seu email" required>
+    <button type="submit">Continuar</button>
+  </form>
+  <small><a href="login.php">Voltar ao login</a></small>
+</div>
 </body>
 </html>
