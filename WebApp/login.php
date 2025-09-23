@@ -32,28 +32,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             // Redireciona com base na quantidade de acessos
             if ($user['quant_acesso'] == 0) {
-                redirect('primeiro_acesso.php');
+                redirect('1°_acesso.php');
             } else {
-                redirect('painel.php');
+                redirect('pag_principal.php');
             }
-        } else {
-            // Acesso falhou
-            if ($user) {
-                $tentativas = 1;
-                $tentativas = $tentativas + 1;
-                $status = $user['status'];
-                if ($tentativas >= 3) {
-                    $status = 'B';
-                }
-                    
+        }          
                 $stmt = $conn->prepare("UPDATE usuarios SET status = ? WHERE login = ?");
                 $stmt->bind_param("ss", $status, $email);
                 $stmt->execute();
                 $stmt->close();
-                
-                $erro = "Usuário ou senha inválidos. Tentativas: {$tentativas}/3";
-            } else {
-                $erro = "Usuário ou senha inválidos.";
+    
+
+            }
             }
         }
     }

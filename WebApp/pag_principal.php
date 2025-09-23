@@ -9,7 +9,7 @@ if (!is_logged()) {
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Painel</title>
+    <title>Página principal</title>
     <link rel="stylesheet" href="CSS/style.css">
 </head>
 <body>
