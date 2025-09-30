@@ -41,52 +41,50 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro</title>
     <link rel="stylesheet" href="CSS/style.css">
 </head>
+
 <body>
-<div class="cadastro-container">
-    <h2>Cadastro de Usuário</h2>
+    <div class="cadastro-container">
+        <h2>Cadastro de Usuário</h2>
 
-    <?php if ($success != ""): ?>
-        <p class="success"><?php echo $success; ?></p>
-    <?php endif; ?>
-    <?php if ($error != ""): ?>
-        <p class="error"><?php echo $error; ?></p>
-    <?php endif; ?>
+        <?php if ($success != ""): ?>
+            <p class="success"><?php echo $success; ?></p>
+        <?php endif; ?>
+        <?php if ($error != ""): ?>
+            <p class="error"><?php echo $error; ?></p>
+        <?php endif; ?>
 
-    <form id="cadastroForm" method="post">
-        <div class="input-group">
-            <input type="text" id="nome" name="nome" placeholder="Digite seu nome" required>
-        </div>
+        <form id="cadastroForm" method="post">
+            <div class="input-group">
+                <input type="text" id="nome" name="nome" placeholder="Digite seu nome" required>
+            </div>
 
-        <div class="input-group">
-            <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>
-        </div>
+            <div class="input-group">
+                <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>
+            </div>
 
-        <div class="input-group">
-            <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
-        </div>
+            <div class="input-group">
+                <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+            </div>
 
-        <div class="input-group">
-            <select id="tipo" name="tipo" required>
-                <option value="U">Normal</option>
-                <option value="A">Administrador</option>
-            </select>
-        </div>
-
-        <button type="submit">Cadastrar</button>
+            <div class="input-group">
+                <select id="tipo" name="tipo" required>
+                    <option value="U">Normal</option>
+                    <option value="A">Administrador</option>
+                </select>
+            </div>
+            <button type="submit">Cadastrar</button>
+    </div>
     </form>
-
-    <p>Já tem conta?</p>
-    <a href="login.php">
-        <button type="button">Voltar para Login</button>
-    </a>
-</div>
+    <p>Já tem conta? Ir para o login</p>
+    </div>
 
 </body>
+
 </html>
- 
