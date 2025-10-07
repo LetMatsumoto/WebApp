@@ -58,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <head>
     <meta charset="UTF-8">
     <title>Redefinir Senha</title>
-    <link rel="stylesheet" href="CSS/style.css"> <!-- Importa seu CSS lilás -->
+    <link rel="stylesheet" href="CSS/style.css"> 
 </head>
 
 <body>
@@ -84,15 +84,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 </div>
             </form>
         </div>
-
-    <?php else: ?>
-        <!-- Caso o usuário já tenha redefinido a senha anteriormente -->
-        <p style="text-align:center; margin-top:50px;">
-            Você já redefiniu sua senha anteriormente.<br>
-            Redirecionando para a página inicial...
-        </p>
-        <!-- Redireciona automaticamente após 2 segundos -->
-        <meta http-equiv="refresh" content="2;url=home.php">
     <?php endif; ?>
 </body>
 
