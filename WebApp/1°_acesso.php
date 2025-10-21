@@ -2,16 +2,14 @@
 require_once 'conexao.php'; 
 require_once 'funcoes.php';
 
-//Inicia a sessão para acessar as variáveis do usuário logado
-session_start();
 
 // Guarda o ID do usuário logado na variável $id
-$id = $_SESSION['usuario_id'];
+$id = $user['id']; // se você pegou o ID antes do login
 
 // Consulta o número de acessos do usuário no banco de dados
 $sql = "SELECT quant_acesso FROM usuarios WHERE id = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $id);
+$stmt->bind_param("id", $id);
 $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
@@ -63,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <body>
     <?php if ($showContainer): ?> 
-        <!-- Exibe o container lilás apenas se for o primeiro acesso -->
+        <!-- Exibe o bloco   lilás apenas se for o primeiro acesso -->
         <div class="cadastro-container">
             <h2>Redefinir Senha</h2>
 

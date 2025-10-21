@@ -2,14 +2,19 @@
 require_once 'conexao.php';
 require_once 'funcoes.php';
 
+// Inicia a sessão para poder usar variáveis globais
+session_start();
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Captura e limpa os dados do formulário
     $login = trim($_POST['email'] ?? '');
     $senha = $_POST['senha'] ?? '';
 
+    // Verifica se os campos foram preenchidos
     if (empty($login) || empty($senha)) {
         $erro = "Por favor, preencha todos os campos.";
     } else {
-        // Usa prepared statement para prevenir injeção de SQL
+        // Prepara uma consulta segura (impede SQL Injection)
         $stmt = $conn->prepare("SELECT * FROM usuarios WHERE login = ?");
         $stmt->bind_param("s", $login);
         $stmt->execute();
@@ -17,35 +22,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = $result->fetch_assoc();
         $stmt->close();
 
+        // Verifica se o usuário existe, está ativo e se a senha confere
         if ($user && $user['status'] === 'A' && password_verify($senha, $user['senha'])) {
-            // Acesso bem-sucedido
-            // Atualiza tentativas para 0 e incrementa a quantidade de acessos
+
+            // Atualiza o contador de acessos no banco de dados
             $stmt = $conn->prepare("UPDATE usuarios SET quant_acesso = quant_acesso + 1 WHERE login = ?");
             $stmt->bind_param("s", $login);
             $stmt->execute();
             $stmt->close();
             
-            // Define as variáveis de sessão
-            $_SESSION['email'] = $user['email'];
-            $_SESSION['nome']  = $user['nome'];
-            $_SESSION['tipo']  = $user['tipo'];
-            
-            // Redireciona com base na quantidade de acessos
+            // Salva as informações do usuário na sessão
+            $_SESSION['id']    = $user['id'];      // ID do usuário
+            $_SESSION['email'] = $user['email'];   // Email
+            $_SESSION['nome']  = $user['nome'];    // Nome
+            $_SESSION['tipo']  = $user['tipo'];    // Tipo (admin, comum etc.)
+
+            // Redireciona conforme o número de acessos
+            // Se for o primeiro acesso, vai para a página de redefinir senha
             if ($user['quant_acesso'] == 0) {
                 redirect('1°_acesso.php');
             } else {
                 redirect('pag_principal.php');
             }
-        }          
-                $stmt = $conn->prepare("UPDATE usuarios SET status = ? WHERE login = ?");
-                $stmt->bind_param("ss", $status, $email);
-                $stmt->execute();
-                $stmt->close();
-    
-
-            }
-            }
-            
+        } else {
+            // Caso o login ou senha estejam incorretos
+            $erro = "Usuário ou senha inválidos.";
+        }
+    }
+}
 ?>
 <!doctype html>
 <html>
@@ -57,12 +61,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
 <div class="container">
     <h2>Login</h2>
+
+    <!-- Mensagem de sucesso (vinda por GET, se houver) -->
     <?php if (!empty($_GET['success'])): ?>
         <div class="success"><?= htmlspecialchars($_GET['success']) ?></div>
     <?php endif; ?>
+
+    <!-- Mensagem de erro (validação ou login incorreto) -->
     <?php if (!empty($erro)): ?>
         <div class="alert"><?= htmlspecialchars($erro) ?></div>
     <?php endif; ?>
+
+    <!-- Formulário de login -->
     <form method="post">
         <input type="email" name="email" placeholder="Email" required>
         <input type="password" name="senha" placeholder="Senha" required>
