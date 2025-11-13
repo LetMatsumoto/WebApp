@@ -4,7 +4,7 @@
 •Aplicação web: Front-End e Back-End <br>
 •EEEMI Prof° Joaquim de Moura Candelária<br> 
 
-•Funções•
+•Funções•<br>
 -Autenticação de usuário<br>
 -Contagem de acesso;<br>
 -Bloqueio de usuário<br>
