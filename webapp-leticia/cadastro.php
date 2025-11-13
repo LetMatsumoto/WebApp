@@ -9,9 +9,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $nome = trim($_POST['nome']);
     $login = trim($_POST['login']);
     $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
-    $tipo = $_POST['tipo']; // 'A' = Admin, 'U' = Normal
+    $tipo = $_POST['tipo']; // '0' = Admin, '1' = Normal
     $qtde_acesso = 0;
-    $status = 'A';
+    $status = '0';
 
     // Verifica se login/email já existe
     $sqlCheck = "SELECT * FROM USUARIOS WHERE login=?";
@@ -76,8 +76,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             <div class="input-group" >
                 <select id="tipo" name="tipo" required>
-                    <option value="U">Normal</option>
-                    <option value="A">Administrador</option>
+                    <option value="1">Normal</option>
+                    <option value="0">Administrador</option>
                 </select>
             </div>
             <div>
